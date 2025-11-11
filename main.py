@@ -1,5 +1,5 @@
 from langchain_core.messages import HumanMessage
-from langchain_core.messages.tool import tool_call
+from langchain.tools import tool
 from langchain_groq import ChatGroq
 from langchain.agents import create_agent
 from dotenv import load_dotenv
@@ -7,7 +7,27 @@ import os
 
 load_dotenv()
 
+"""
+Decorator - defines a tool 
+MANDATORY TO ADD A DOCSTRING BELOW A TOOL FUNCTION to help AI determine when to use th function
+"""
 
+@tool
+def calculator(a: float, b: float)  -> str:
+    """
+        A simple tool that performs addition on two floating-point numbers.
+        Use this tool for any mathematical addition query.
+    """
+    print("Tool 1 is working successfully....")
+    return f"The sum of {a} and {b} is {a+b}"
+
+@tool
+def greeting(name: str)  -> str: # '->' symbol is used to show what is the return type of the function
+    """
+        A simple tool for greeting the user
+    """
+    print("Tool 2 is working successfully....")
+    return f"Hello {name}, how can I help you today?"
 
 def main():
     model = ChatGroq(
@@ -16,7 +36,7 @@ def main():
         temperature=0
     )
 
-    tools = []
+    tools = [calculator, greeting]
     agent_executor = create_agent(model, tools)
 
     print('Welcome! I am your AI Agent here for your assistance')
